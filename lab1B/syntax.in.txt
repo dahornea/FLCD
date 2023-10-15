@@ -1,0 +1,22 @@
+program = {statement}
+statement = (data_statement|struc_statement|assign_statement|if_statement|loopat_statement|export_statement|function_call_statement) "."
+data_statement = "DATA:" identifier_list
+struc_statement = "struc" "<" positive_number ">" identifier
+assign_statement = identifier "=" expression
+expression = expression "+" term | term
+term = term "*" factor | factor
+factor = "(" expression ")" | identifier
+statement = simplestatement | compound_statement
+simplestatement = assign_statement | io_statement | perform_statement
+compound_statement = if_statement
+if_statement = "IF" condition statement ["ELSE" statement] "ENDIF"
+while_statement = "WHILE" "(" condition ")" ":" statement "ENDWHILE."
+condition = expression relation expression
+relation = "LT"|"LE"|"EQ"|"NE"|"GE"|"GT"
+export_statement = "EXPORT" expression
+function_call_statement = "CALL METHOD" function_name | "CALL METHOD" function_name "IMPORTING:"
+function_name =  "READ" | "WRITE" 
+
+
+
+ 

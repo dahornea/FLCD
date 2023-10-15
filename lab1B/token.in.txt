@@ -1,0 +1,33 @@
++
+-
+*
+/
+EQ
+LT
+GT
+LE
+GE
+NE
+<
+>
+=
+{
+}
+(
+)
+;
+space
+newline
+"
+,
+DATA:
+IF
+ENDIF
+ELSE
+LOOP AT:
+WHILE
+READ
+WRITE
+EXPORT
+CALL METHOD
+IMPORTING:

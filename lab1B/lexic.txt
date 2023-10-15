@@ -1,0 +1,22 @@
+Alphabet
+a-z
+A-Z
+0-9
+_
+
+Lexic
+
+operators: +, -, *, /, ==, <, <=, >, >=, =
+separators:(), ., space, newline, ", ',' (comma)
+reserved words: data:, if, write, read, , else, while, endif, call method, export, importing:, struc
+
+identifier ::= letter | letter{letter}{digit}
+letter ::= "A" | "B" |...| "Z"
+digit ::= "0" | "1" |...| "9"
+
+i_constant = ["+"|"-"] non_zero_digit {digit} | "0"
+non_zero_digit = "1"|"2"|...|"9"
+
+char_constant = 'letter'|'digit'
+
+string_constant = """{letter|digit|"_"|" "}"""
