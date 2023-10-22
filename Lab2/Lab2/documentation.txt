@@ -1,7 +1,7 @@
 https://github.com/dahornea/FLCD
 For the Symbol Table I implemented 1 Hash Table for identifiers, int constants and string constants.
 The hash table is generic. The generic type represents the data type of the object that's inserted in the table.
-The GetByKey method returns the value associated with a key.
-The AddSymbol method adds a symbol to the table.
-The GetPair method returns a key-value pair based on the given key.
+The Get method returns the value associated with a key.
+The Add method adds a symbol to the table.
+The FindByPair method returns a key-value pair based on the given key.
 The getSize method returns the size of the hash table.
