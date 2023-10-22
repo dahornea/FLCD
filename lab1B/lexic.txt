@@ -8,7 +8,7 @@ Lexic
 
 operators: +, -, *, /, ==, <, <=, >, >=, =
 separators:(), ., space, newline, ", ',' (comma)
-reserved words: data:, if, write, read, , else, while, endif, call method, export, importing:, struc
+reserved words: data:, if, write, read, , else, while, endif, call method, export, importing:, struc, endwhile
 
 identifier ::= letter | letter{letter}{digit}
 letter ::= "A" | "B" |...| "Z"
