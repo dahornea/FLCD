@@ -9,74 +9,48 @@ namespace Lab2bun
     using System;
     using System.Collections.Generic;
 
-    public class HashTable<TKey, TValue>
+    public class HashTable
     {
-        private const int Capacity = 30;  // Adjust the capacity as needed
-        private LinkedList<KeyValuePair<TKey, TValue>>[] table;
+        private int size;
+        private List<List<string>> table;
 
-        public HashTable(int capacity = Capacity)
+        public HashTable(int size)
         {
-            table = new LinkedList<KeyValuePair<TKey, TValue>>[capacity];
+            this.size = size;
+            this.table = new List<List<string>>(size);
+            for (int i = 0; i < size; i++)
+            {
+                this.table.Add(new List<string>());
+            }
         }
 
-        // Hash function to calculate the index for the given key
-        private int Hash(object key)
+        public string FindByPos(Pair<int, int> pos)
         {
-            int hash = key switch
+            if (this.table.Count <= pos._first || this.table[pos._first].Count <= pos._second)
             {
-                int intKey => intKey.GetHashCode() % Capacity,
-                string stringKey => stringKey.GetHashCode() % Capacity,
-                _ => key.GetHashCode() % Capacity
-            };
-
-            return hash < 0 ? hash + Capacity : hash;
-        }
-
-        // Add a key-value pair to the hash table
-        public void Add(TKey key, TValue value)
-        {
-            int index = Hash(key);
-            if (table[index] == null)
-            {
-                table[index] = new LinkedList<KeyValuePair<TKey, TValue>>();
+                throw new IndexOutOfRangeException("Invalid position");
             }
 
-            table[index].AddLast(new KeyValuePair<TKey, TValue>(key, value));
+            return this.table[pos._first][pos._second];
         }
 
-        // Get the value associated with a key
-        public TValue Get(TKey key)
+        public int GetSize()
         {
-            int index = Hash(key);
-            var list = table[index];
-
-            if (list != null)
-            {
-                foreach (var pair in list)
-                {
-                    if (pair.Key.Equals(key))
-                    {
-                        return pair.Value;
-                    }
-                }
-            }
-
-            throw new KeyNotFoundException("Key not found in the hash table");
+            return size;
         }
 
-        // Find a key-value pair in the hash table and return it
-        public KeyValuePair<TKey, TValue>? FindByPair(TKey key)
+        public Pair<int, int> FindPositionOfTerm(string elem)
         {
-            int index = Hash(key);
-            var list = table[index];
+            int pos = Hash(elem);
 
-            if (list != null)
+            if (table[pos].Count > 0)
             {
-                foreach (var pair in list)
+                List<string> elems = table[pos];
+                for (int i = 0; i < elems.Count; i++)
                 {
-                    if (pair.Key.Equals(key))
+                    if (elems[i] == elem)
                     {
-                        return pair;
+                        return new Pair<int, int>(pos, i);
                     }
                 }
             }
@@ -84,9 +58,51 @@ namespace Lab2bun
             return null;
         }
 
-        public int getSize()
+        private int Hash(string key)
         {
-            return Capacity;
+            int sumChars = 0;
+            char[] keyCharacters = key.ToCharArray();
+            foreach (char c in keyCharacters)
+            {
+                sumChars += c;
+            }
+            return sumChars % size;
+        }
+
+        public bool ContainsTerm(string elem)
+        {
+            return FindPositionOfTerm(elem) != null;
+        }
+
+        public bool Add(string elem)
+        {
+            if (ContainsTerm(elem))
+            {
+                return false;
+            }
+
+            int pos = Hash(elem);
+
+            List<string> elems = table[pos];
+            elems.Add(elem);
+
+            return true;
+        }
+
+        public override string ToString()
+        {
+            System.Text.StringBuilder computedString = new System.Text.StringBuilder();
+            for (int i = 0; i < table.Count; i++)
+            {
+                if (table[i].Count > 0)
+                {
+                    computedString.Append(i);
+                    computedString.Append(" - ");
+                    computedString.Append(string.Join(", ", table[i]));
+                    computedString.Append("\n");
+                }
+            }
+            return computedString.ToString();
         }
     }
 

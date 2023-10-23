@@ -1,38 +1,55 @@
 ﻿using System;
-using Lab2bun;
 
 using System;
 using System.Collections.Generic;
 
-public class SymbolTable<TValue>
+namespace Lab2bun
 {
-    private HashTable<object, TValue> hashTable;
-
-    public SymbolTable(int size)
+    public class SymbolTable
     {
-        hashTable = new HashTable<object, TValue>(size);
-    }
+        private int size;
+        private HashTable hashTable;
 
-    public void AddSymbol(object symbol, TValue value)
-    {
-        hashTable.Add(symbol, value);
-    }
+        public SymbolTable(int size)
+        {
+            this.size = size;
+            this.hashTable = new HashTable(size);
+        }
 
-    public TValue GetByKey(object key)
-    {
-        return hashTable.Get(key);
-    }
+        public string FindByPos(Pair<int, int> pos)
+        {
+            return hashTable.FindByPos(pos);
+        }
 
-    public KeyValuePair<object, TValue> GetPair (object key)
-    {
-        return (KeyValuePair<object, TValue>)hashTable.FindByPair(key);
-    }
+        public HashTable GetHashTable()
+        {
+            return hashTable;
+        }
 
-    public int getSize()
-    {
-        return hashTable.getSize();
-    }
+        public int GetSize()
+        {
+            return hashTable.GetSize();
+        }
 
+        public Pair<int, int> FindPositionOfTerm(string term)
+        {
+            return hashTable.FindPositionOfTerm(term);
+        }
+
+        public bool ContainsTerm(string term)
+        {
+            return hashTable.ContainsTerm(term);
+        }
+
+        public bool Add(string term)
+        {
+            return hashTable.Add(term);
+        }
+
+        public override string ToString()
+        {
+            return hashTable.ToString();
+        }
+    }
 }
-
 
