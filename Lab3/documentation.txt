@@ -1,0 +1,13 @@
+https://github.com/dahornea/FLCD/tree/main/Lab3
+
+The MyScanner class is designed to tokenize a source code file into a list of tokens, identify lexical elements (keywords, operators, separators, constants, and identifiers), 
+and build a Program Internal Form (PIF) and Symbol Table based on the recognized tokens. Below is the documentation for the class:
+
+private string ReadFile(): Reads the content of the source code file and returns it as a string.
+private List<Tuple<string, Tuple<int, int>>> CreateListOfProgramElements(): Tokenizes the source code into a list of non-empty tokens.
+private List<Tuple<string, Tuple<int, int>>> Tokenize(List<string> tokensToBe): Processes tokens and recognizes lexical elements, building the Program Internal Form and Symbol Table.
+public void Scan(): Initiates the scanning process, identifies tokens, and populates the Program Internal Form and Symbol Table. Displays lexical errors if encountered.
+public ProgramInternalForm GetPif(): Returns the Program Internal Form built during the scanning process.
+public SymbolTable GetSymbolTable(): Returns the Symbol Table built during the scanning process.
+
+Lexical errors, if encountered, will be displayed on the console indicating the line and column number where the error occurred.
