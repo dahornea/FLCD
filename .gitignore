@@ -1,0 +1,8 @@
+
+*.vsidx
+*.v2
+Lab3/.vs/Lab2bun/v17/.suo
+*.bin
+*.dll
+*.json
+*.pdb
