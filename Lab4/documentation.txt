@@ -1,33 +1,45 @@
-https://github.com/dahornea/FLCD/tree/main/Lab3
+https://github.com/dahornea/FLCD/tree/main/Lab4
 
-The HashTable class represents a basic implementation of a hash table in C#.
-It allows for storing and retrieving strings based on their hash values.
+The FiniteAutomaton class represents a finite automaton (FA) and provides methods to read its definition from a file, 
+check if it is deterministic, retrieve various components, and determine if it accepts a given input sequence.
 
-public string FindByPos(Tuple<int, int> pos): retrieves the string located at the specified position in the hash table.
-public int GetSize(): returns the size of the hash table.
-public Tuple<int, int> FindPositionOfTerm(string elem): finds the position (row and column) of the specified string element in the hash table.
-public bool ContainsTerm(string elem): checks whether the specified string element exists in the hash table.
-public bool Add(string elem): adds the specified string element to the hash table if it does not already exist.
-public override string ToString(): provides a formatted string representation of the hash table, displaying the index and elements of non-empty buckets.
-private int Hash(string key): computes the hash value of the input key using a simple algorithm and returns the result modulo the size of the hash table to get a valid index.
+public FiniteAutomaton(string filePath)
+Creates a new instance of the FiniteAutomaton class by reading the definition from the specified file.
 
-For the Symbol Table I implemented 1 Hash Table for identifiers, int constants and string constants.
-The hash table is generic. The generic type represents the data type of the object that's inserted in the table.
-The FindByPos method return the key and value from a specified position.
-The GetSize method returns the size of the table.
-The FindPositionOfTerm method returns the position of an element.
-The ContainsTerm method checks if the table contains a term.
-The Add method adds an element to the table.
+public bool CheckIfDeterministic()
+Checks if the finite automaton is deterministic, i.e., each state has at most one transition for each symbol.
 
+public List<string> GetStates()
+Returns a list of states in the finite automaton.
 
-The MyScanner class is designed to tokenize a source code file into a list of tokens, identify lexical elements (keywords, operators, separators, constants, and identifiers), 
-and build a Program Internal Form (PIF) and Symbol Table based on the recognized tokens. Below is the documentation for the class:
+public string GetInitialState()
+Returns the initial state of the finite automaton.
 
-private string ReadFile(): Reads the content of the source code file and returns it as a string.
-private List<Tuple<string, Tuple<int, int>>> CreateListOfProgramElements(): Tokenizes the source code into a list of non-empty tokens.
-private List<Tuple<string, Tuple<int, int>>> Tokenize(List<string> tokensToBe): Processes tokens and recognizes lexical elements, building the Program Internal Form and Symbol Table.
-public void Scan(): Initiates the scanning process, identifies tokens, and populates the Program Internal Form and Symbol Table. Displays lexical errors if encountered.
-public ProgramInternalForm GetPif(): Returns the Program Internal Form built during the scanning process.
-public SymbolTable GetSymbolTable(): Returns the Symbol Table built during the scanning process.
+public List<string> GetAlphabet()
+Returns the alphabet of the finite automaton.
 
-Lexical errors, if encountered, will be displayed on the console indicating the line and column number where the error occurred.
+public List<string> GetFinalStates()
+Returns a list of final states in the finite automaton.
+
+public Dictionary<Tuple<string, string>, HashSet<string>> GetTransitions()
+Returns a dictionary representing the transitions of the finite automaton.
+
+public string WriteTransitions()
+Returns a string representation of the transitions in the finite automaton.
+
+public bool AcceptsSequence(string sequence)
+Checks if the finite automaton accepts the input sequence.
+
+letter          ::= 'a' | 'b' | ... | 'z' | 'A' | 'B' | ... | 'Z'
+specialSymbol   ::= '-' | '+'
+digit           ::= '0' | '1' | ... | '9'
+alphabetCharacter ::= letter | digit | specialSymbol
+
+alphabet        ::= alphabetCharacter {. alphabetCharacter}
+state           ::= letter
+listOfStates    ::= state {. state}
+transition      ::= state . alphabet . state
+listOfTransitions ::= transition '\n' {transition '\n'}
+initialState    ::= state
+finalStates     ::= state {. state}
+FAfile          ::= listOfStates '\n' alphabet '\n' initialState '\n' finalStates '\n' listOfTransitions
