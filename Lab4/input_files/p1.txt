@@ -1,0 +1,14 @@
+\n DATA: a, b, c.
+a = READ.
+b = READ.
+c = READ.
+DATA: d = a.
+
+IF b gt d 
+    d = b.
+ENDIF.
+
+IF c gt d
+    d = c.
+ENDIF.
+WRITE: d

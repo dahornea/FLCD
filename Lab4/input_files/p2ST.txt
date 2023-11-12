@@ -1,0 +1,10 @@
+0 - 2
+5 - i
+11 - "number is not prime"
+20 - x
+38 - X
+41 - prime
+42 - "number is prime"
+48 - 0
+49 - 1
+
