@@ -30,10 +30,10 @@ public class Program
 
     private static void RunScanner()
     {
-        Run("D:\\UBB-Projects\\FLCD\\Lab3\\input_files\\p1.txt");
-        Run("D:\\UBB-Projects\\FLCD\\Lab3\\input_files\\p2.txt");
-        Run("D:\\UBB-Projects\\FLCD\\Lab3\\input_files\\p3.txt");
-        Run("D:\\UBB-Projects\\FLCD\\Lab3\\input_files\\p1err.txt");
+        Run("D:\\UBB-Projects\\FLCD\\Lab4\\input_files\\p1.txt");
+        Run("D:\\UBB-Projects\\FLCD\\Lab4\\input_files\\p2.txt");
+        Run("D:\\UBB-Projects\\FLCD\\Lab4\\input_files\\p3.txt");
+        Run("D:\\UBB-Projects\\FLCD\\Lab4\\input_files\\p1err.txt");
     }
 
 public class DFAOptions
