@@ -168,7 +168,7 @@ namespace Lab2bun
                 {
                     this.pif.Add(new Tuple<string, Tuple<int, int>>(token, new Tuple<int, int>(-1, -1)), 4);
                 }
-                else if (Regex.IsMatch(token, "^(0|[-+]?[1-9]\\d*|'[1-9]'|'[a-zA-Z]'|\"[0-9]*[a-zA-Z ]*\")$") || new FiniteAutomaton("D:\\UBB-Projects\\FLCD\\Lab4\\input_files\\FA_integer_constants.txt").AcceptsSequence(token))
+                else if (Regex.IsMatch(token, "^'[1-9]'|'[a-zA-Z]'|\"[0-9]*[a-zA-Z ]*\"$") || new FiniteAutomaton("D:\\UBB-Projects\\FLCD\\Lab4\\input_files\\FA_integer_constants.txt").AcceptsSequence(token))
                 {
                     this.symbolTable.Add(token);
                     this.pif.Add(new Tuple<string, Tuple<int, int>>("CONST", symbolTable.FindPositionOfTerm(token)), 0);
