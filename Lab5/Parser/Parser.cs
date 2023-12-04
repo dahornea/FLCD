@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 public class Parser
 {
     private Grammar grammar;
-    private List<State> canonicalCollection;
+    public List<State> canonicalCollection;
 
     public Parser(Grammar grammar)
     {
@@ -36,13 +37,13 @@ public class Parser
             foreach (var closureItem in currentClosure)
             {
                 if (closureItem.DotPosition < closureItem.Rhs.Count &&
-                    grammar.N.Contains(closureItem.Rhs[closureItem.DotPosition]))
+                    grammar.N.Contains(closureItem.Rhs[closureItem.DotPosition].ToString()))
                 {
-                    foreach (var production in grammar.P[closureItem.Rhs[closureItem.DotPosition]])
+                    foreach (var production in grammar.P[closureItem.Rhs[closureItem.DotPosition].ToString()])
                     {
                         var newItem = new Item(
-                            closureItem.Rhs[closureItem.DotPosition],
-                            production,
+                            closureItem.Rhs[closureItem.DotPosition].ToString(),
+                            new List<char>(string.Join("", production).ToCharArray()),
                             0
                         );
                         if (!IsItemInClosure(newItem, currentClosure))
@@ -61,13 +62,14 @@ public class Parser
         return new State(items, currentClosure);
     }
 
+
     public State Goto(State state, string symbol)
     {
         var itemsForSymbol = new List<Item>();
         foreach (var item in state.Closure)
         {
             if (item.DotPosition < item.Rhs.Count &&
-                item.Rhs[item.DotPosition] == symbol)
+                item.Rhs[item.DotPosition].ToString() == symbol)
             {
                 itemsForSymbol.Add(new Item(item.Lhs, item.Rhs, item.DotPosition + 1));
             }
@@ -90,7 +92,7 @@ public class Parser
         {
             Closure(new List<Item>
             {
-                new Item(grammar.S, grammar.P[grammar.S][0], 0)
+                new Item(grammar.S, grammar.P[grammar.S][0].SelectMany(s => s).ToList(), 0)
             })
         };
 

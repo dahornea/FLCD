@@ -18,16 +18,17 @@ public class State
 
     public List<string> GetAllSymbolsAfterDot()
     {
-        var result = new List<string>();
+        List<string> result = new List<string>();
         foreach (var item in Closure)
         {
             if (item.DotPosition < item.Rhs.Count)
             {
-                result.Add(item.Rhs[item.DotPosition]);
+                result.Add(item.Rhs[item.DotPosition].ToString());
             }
         }
         return result;
     }
+
 
     public override bool Equals(object obj)
     {

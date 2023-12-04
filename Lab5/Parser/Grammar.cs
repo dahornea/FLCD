@@ -5,36 +5,40 @@ using System.Linq;
 
 public class Grammar
 {
-    public List<string> N { get; set; }
-    public List<string> E { get; set; }
-    public Dictionary<string, List<(string, int)>> P { get; set; }
-    public string S { get; set; }
+    public const string EPSILON = "epsilon";
+    public const string STARTING_SYMBOL = "S'";
 
-    public Grammar(List<string> N, List<string> E, Dictionary<string, List<(string, int)>> P, string S)
+    public List<string> N { get; private set; }
+    public List<string> E { get; private set; }
+    public string S { get; private set; }
+    public Dictionary<string, List<List<string>>> P { get; private set; }
+    public bool IsEnhanced { get; private set; }
+
+    public Grammar(bool isEnhanced = false)
     {
-        this.N = N;
-        this.E = E;
-        this.P = P;
-        this.S = S;
+        N = new List<string>();
+        E = new List<string>();
+        S = "";
+        P = new Dictionary<string, List<List<string>>>();
+        IsEnhanced = isEnhanced;
     }
 
-    public static bool Validate(List<string> N, List<string> E, Dictionary<string, List<(string, int)>> P, string S)
+    public bool CheckIfGrammarIsEnhanced()
     {
-        if (!N.Contains(S))
-            return false;
-
-        foreach (var key in P.Keys)
+        // Check that the starting symbol has only one production
+        if (P[S].Count != 1)
         {
-            if (!N.Contains(key))
-                return false;
+            return false;
+        }
 
-            foreach (var move in P[key])
+        // Check that the starting symbol does not appear on the right hand side of any production
+        foreach (var production in P.Values)
+        {
+            foreach (var rhs in production)
             {
-                foreach (var ch in move.Item1)
+                if (rhs.Contains(S))
                 {
-                    if (!N.Contains(ch.ToString()) && !E.Contains(ch.ToString()) && ch != 'E')
-                        return false;
-
+                    return false;
                 }
             }
         }
@@ -42,106 +46,108 @@ public class Grammar
         return true;
     }
 
-    public static List<string> ParseLine(string line)
+    public void MakeEnhancedGrammar()
     {
-        return line.Trim().Split('=')[1].Trim().Substring(1, line.Length - 2).Trim().Split(',').Select(value => value.Trim()).ToList();
+        if (!IsEnhanced)
+        {
+            // Add a new non-terminal symbol S'
+            N.Add(STARTING_SYMBOL);
+            // Add a new production S' -> S
+            P[STARTING_SYMBOL] = new List<List<string>> { new List<string> { S } };
+            // Change the starting symbol to Z
+            S = STARTING_SYMBOL;
+            IsEnhanced = true;
+        }
     }
 
-    public static Grammar FromFile(string fileName)
+    private static List<string> ProcessLine(string line)
+    {
+        // Get what comes after the '='
+        return new List<string>(line.Trim().Split(' ').Skip(2));
+    }
+
+    public void ReadFromFile(string fileName)
     {
         using (StreamReader file = new StreamReader(fileName))
         {
-            List<string> N = ParseLine(file.ReadLine());
-            List<string> E = ParseLine(file.ReadLine());
-            string S = file.ReadLine().Split('=')[1].Trim();
-            Dictionary<string, List<(string, int)>> P = ParseRules(ParseLine(string.Concat(file.ReadToEnd())));
+            N = ProcessLine(file.ReadLine());
+            E = ProcessLine(file.ReadLine());
+            S = ProcessLine(file.ReadLine())[0];
 
-            if (!Validate(N, E, P, S))
+            file.ReadLine();  // P =
+
+            // Get all transitions
+            P = new Dictionary<string, List<List<string>>>();
+            while (!file.EndOfStream)
             {
-                throw new Exception("Wrong input file.");
-            }
+                string[] split = file.ReadLine().Split(new[] { "->" }, StringSplitOptions.None);
+                string source = split[0].Trim();
+                string sequence = split[1].TrimStart();
 
-            return new Grammar(N, E, P, S);
-        }
-    }
+                List<string> sequenceList = new List<string>(sequence.Split(' '));
 
-    public static Dictionary<string, List<(string, int)>> ParseRules(List<string> rules)
-    {
-        Dictionary<string, List<(string, int)>> result = new Dictionary<string, List<(string, int)>>();
-        int index = 1;
-
-        foreach (var rule in rules)
-        {
-            var parts = rule.Split(new[] { "->" }, StringSplitOptions.None);
-            var lhs = parts[0].Trim();
-            var rhs = parts[1].Split('|').Select(value => value.Trim()).ToList();
-
-            foreach (var value in rhs)
-            {
-                if (result.ContainsKey(lhs))
+                if (P.ContainsKey(source))
                 {
-                    result[lhs].Add((value, index));
+                    P[source].Add(sequenceList);
                 }
                 else
                 {
-                    result[lhs] = new List<(string, int)> { (value, index) };
+                    P[source] = new List<List<string>> { sequenceList };
                 }
-                index++;
             }
         }
-
-        return result;
     }
 
-    public string[] SplitRhs(string prod)
+    public bool CheckCfg()
     {
-        return prod.Split(' ');
-    }
+        bool hasStartingSymbol = false;
 
-    public bool IsNonTerminal(string value)
-    {
-        return N.Contains(value);
-    }
-
-    public bool IsTerminal(string value)
-    {
-        return E.Contains(value);
-    }
-
-    public List<(string, int)> GetProductionsFor(string nonTerminal)
-    {
-        if (!IsNonTerminal(nonTerminal))
+        foreach (string key in P.Keys)
         {
-            throw new Exception("Can only show productions for non-terminals");
-        }
-        return P.ContainsKey(nonTerminal) ? P[nonTerminal] : null;
-    }
-
-    public (string, string) GetProductionForIndex(int index)
-    {
-
-        foreach (var kvp in P)
-        {
-            var key = kvp.Key;
-            var value = kvp.Value;
-
-            foreach (var v in value)
+            if (key == S)
             {
-                if (v.Item2 == index)
+                hasStartingSymbol = true;
+            }
+
+            if (!N.Contains(key))
+            {
+                return false;
+            }
+        }
+
+        if (!hasStartingSymbol)
+        {
+            return false;
+        }
+
+        foreach (var production in P.Values)
+        {
+            foreach (var rhs in production)
+            {
+                foreach (var value in rhs)
                 {
-                    return (key, v.Item1);
+                    if (!N.Contains(value) && !E.Contains(value) && value != EPSILON)
+                    {
+                        return false;
+                    }
                 }
             }
         }
-        return (null, null);
 
+        return true;
     }
 
     public override string ToString()
     {
-        return "N = { " + string.Join(", ", N) + " }\n"
-             + "E = { " + string.Join(", ", E) + " }\n"
-             + "P = { " + string.Join(", ", P.Select(prod => $"{prod.Key} -> {string.Join(" | ", prod.Value.Select(v => v.Item1))}")) + " }\n"
-             + "S = " + S + "\n";
+        string result = "N = " + string.Join(", ", N) + "\n";
+        result += "E = " + string.Join(", ", E) + "\n";
+        result += "S = " + S + "\n";
+        result += "P = { ";
+        foreach (var entry in P)
+        {
+            result += entry.Key + " -> " + string.Join(" | ", entry.Value) + ", ";
+        }
+        result = result.TrimEnd(',', ' ') + " }\n";
+        return result;
     }
 }
