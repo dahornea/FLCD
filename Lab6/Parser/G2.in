@@ -1,30 +1,55 @@
-﻿N = { program, declaration, type, typeTemp, cmpdstmt, stmtlist, stmt, stmtTemp, simplstmt, structstmt, ifstmt, tempIf, forstmt, forheader, whilestmt, assignstmt, arithmetic1, arithmetic2, multiply1, multiply2, expression, IndexedIdentifier, iostmt, condition, relation }
-E = { go, number, array, string, {, }, ;, +, -, *, /, (, ), while, for, if, else, cin, cout, <<, >>, id, const, lt, lte, is, dif, gte, gt, eq }
-S = program
-P = {
-    program -> go cmpdstmt,
-    declaration -> type id,
-    type -> string | number typeTemp,
-    typeTemp -> E | array [ const ],
-    cmpdstmt -> { stmtlist },
-    stmtlist -> stmt stmtTemp,
-    stmtTemp -> E | stmtlist,
-    stmt -> simplstmt ; | structstmt,
-    simplstmt -> assignstmt | iostmt | declaration,
-    structstmt -> cmpdstmt | ifstmt | whilestmt | forstmt,
-    ifstmt -> if condition stmt tempIf,
-    tempIf -> E | else stmt,
-    forstmt -> for forheader stmt,
-    forheader -> ( number assignstmt ; condition ; assignstmt ),
-    whilestmt -> while condition stmt,
-    assignstmt -> id eq expression,
-    expression -> arithmetic2 arithmetic1,
-    arithmetic1 -> + arithmetic2 arithmetic1 | - arithmetic2 arithmetic1 | E,
-    arithmetic2 -> multiply2 multiply1,
-    multiply1 -> * multiply2 multiply1 | / multiply2 multiply1 | E,
-    multiply2 -> ( expression ) | id | const,
-    IndexedIdentifier -> id [ const ],
-    iostmt -> cin >> id | cout << id,
-    condition -> ( id relation const ),
-    relation -> lt | lte | is | dif | gte | gt
-}
+﻿N = CompoundStatement Statement AssignStatement IfStatement WhileStatement FunctionCallStatement VarStatement ArrStatement Identifier Expression Letter RestOfIdentifier Digit NonZeroDigit Boolean IntExpression StringExpression BooleanExpression IntConstant StringConstant MathematicalOperator LogicalOperator Sign PositiveNumber RestOfNumber StringContent AcceptedSymbol ArrStatement ArrContent IntContentArr StringContentArr Condition RelationalOperator
+E = ^ A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z \n 0 1 2 3 4 5 6 7 8 9 True False + - * / EQ LE LT GE GT NE ( ) [ ] # , and or _ space : . ! " --> <-- if while endwhile endif
+S = CompoundStatement
+P =
+    CompoundStatement -> Statement \n CompoundStatement | epsilon
+    Statement -> AssignStatement | IfStatement | WhileStatement | FunctionCallStatement | DataStatement | StrucStatement | ExportStatement
+    AssignStatement -> VarStatement
+    DataStatement -> "DATA:" IdentifierList
+    StrucStatement -> "struc" "<" PositiveNumber ">" Identifier
+    ExportStatement -> "EXPORT" Expression
+    VarStatement -> Identifier = Expression
+    IdentifierList -> Identifier RestOfIdentifierList
+    RestOfIdentifierList -> , Identifier RestOfIdentifierList | epsilon
+    FunctionCallStatement -> "CALL METHOD" FunctionName Importing | "CALL METHOD" FunctionName
+    Importing -> "IMPORTING:" | epsilon
+    FunctionName -> "READ" | "WRITE"
+    Expression -> Expression "+" Term | Term
+    Term -> Term "*" Factor | Factor
+    Factor -> "(" Expression ")" | Identifier
+    Statement -> SimpleStatement | CompoundStatement
+    SimpleStatement -> AssignStatement | IoStatement | PerformStatement
+    CompoundStatement -> IfStatement
+    IfStatement -> "IF" Condition Statement ["ELSE" Statement] "ENDIF"
+    WhileStatement -> "WHILE" "(" Condition ")" ":" Statement "ENDWHILE."
+    Condition -> Expression Relation Expression
+    Relation -> "LT" | "LE" | "EQ" | "NE" | "GE" | "GT"
+    IoStatement ->  "READ" ":" IDENTIFIER | "WRITE" ":" IDENTIFIER | "WRITE" ":" CONSTANT
+	Identifier -> Letter RestOfIdentifier
+	RestOfIdentifier -> Letter RestOfIdentifier | Digit RestOfIdentifier | epsilon
+	Letter -> A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R | S | T | U | V | W | X | Y | Z
+	Digit -> ZeroDigit | NonZeroDigit
+	NonZeroDigit -> 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+	ZeroDigit -> 0
+	Boolean -> True | False
+	IntExpression -> IntConstant | Identifier | IntExpression MathematicalOperator IntExpression
+	StringExpression -> StringConstant | Identifier | StringExpression MathematicalOperator StringExpression
+	BooleanExpression -> Boolean | Identifier | BooleanExpression LogicalOperator BooleanExpression
+	IntConstant -> Sign PositiveNumber
+	StringConstant -> " " StringContent " "
+	MathematicalOperator -> + | - | * | /
+	LogicalOperator -> and | or
+	Sign -> + | -
+	PositiveNumber -> NonZeroDigit RestOfNumber
+	RestOfNumber -> Digit RestOfNumber | epsilon
+	StringContent -> Letter RestOfStringContent
+	RestOfStringContent -> Letter RestOfStringContent | Digit RestOfStringContent | AcceptedSymbol RestOfStringContent | epsilon
+	AcceptedSymbol -> space | : | . | ! | " | --> | <-- | if | while | endwhile | endif
+	ArrStatement -> Identifier = ArrContent
+	ArrContent -> [ IntContentArr ]
+	IntContentArr -> IntConstant RestOfIntContentArr
+	RestOfIntContentArr -> , IntConstant RestOfIntContentArr | epsilon
+	StringContentArr -> StringConstant RestOfStringContentArr
+	RestOfStringContentArr -> , StringConstant RestOfStringContentArr | epsilon
+	Condition -> Expression RelationalOperator Expression
+	RelationalOperator -> EQ | LE | LT | GE | GT | NE
