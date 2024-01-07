@@ -1,0 +1,17 @@
+DATA: 5n.
+5n = READ.
+DATA: i, prime.
+i = 2$.
+prime = 1.
+WHILE(i * i LE 5n && prime EQ 1):
+      IF 5n%i EQ 5n
+	  prime = 0.
+      ENDIF.
+      i = i + 1.
+ENDWHILE.
+
+IF prime EQ 1
+    READ: "number is prime".
+ELSE
+    READ: "number is not prime".
+ENDIF.
