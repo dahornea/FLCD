@@ -8,17 +8,17 @@ namespace Lab7
     public class ParserOutputEntry
     {
         private int _index;
-        private int _symbol;
+        private string _symbol;
         private int _father;
         private int _sibling;
-
+        
         public int Index
         {
             get => _index;
             set => _index = value;
         }
 
-        public int Symbol
+        public string Symbol
         {
             get => _symbol;
             set => _symbol = value;
@@ -36,7 +36,7 @@ namespace Lab7
             set => _sibling = value;
         }
 
-        public ParserOutputEntry(int index, int symbol, int father, int sibling)
+        public ParserOutputEntry(int index, string symbol, int father, int sibling)
         {
             Index = index;
             Symbol = symbol;
@@ -52,7 +52,7 @@ namespace Lab7
 
     public class ParserOutput
     {
-        private readonly List<ParserOutputEntry> _parsingTree = new List<ParserOutputEntry>();
+        public readonly List<ParserOutputEntry> _parsingTree = new List<ParserOutputEntry>();
         private readonly List<int> _outputBand;
         private readonly Grammar _grammar;
 
@@ -90,13 +90,13 @@ namespace Lab7
                         int father = parsingTreeItem.Index;
                         current_index++;
 
-                        _parsingTree.Add(new ParserOutputEntry(current_index, production.Item2[0], father, -1));
+                        _parsingTree.Add(new ParserOutputEntry(current_index, production.Item2[0].ToString(), father, -1));
 
                         for (int index = 1; index < production.Item2.Length; index++)
                         {
                             current_index++;
                             _parsingTree[current_index - 1].Sibling = current_index;
-                            _parsingTree.Add(new ParserOutputEntry(current_index, production.Item2[index], father, -1));
+                            _parsingTree.Add(new ParserOutputEntry(current_index, production.Item2[index].ToString(), father, -1));
                         }
 
                         break;

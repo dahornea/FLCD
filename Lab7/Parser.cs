@@ -28,9 +28,9 @@ namespace Lab7
     public class Parser
     {
         private readonly Grammar grammar;
-        private List<State> canonicalCollection;
+        public List<State> canonicalCollection;
         private readonly List<Connection> connections;
-        private readonly Dictionary<int, (ACTION, object)> parsingTable;
+        public readonly Dictionary<int, (ACTION, object)> parsingTable;
 
         public Parser(Grammar grammar)
         {
@@ -142,7 +142,7 @@ namespace Lab7
             }
         }
 
-        private void CreateParsingTable()
+        public void CreateParsingTable()
         {
             foreach (var state in canonicalCollection)
             {
@@ -224,7 +224,7 @@ namespace Lab7
             return state.Closure.FirstOrDefault(item => item.DotPosition == item.Rhs.Count);
         }
 
-        private int? GetProductionNumberShiftReduceConflict(int stateId)
+        private string GetProductionNumberShiftReduceConflict(int stateId)
         {
             var state = GetStateById(stateId);
             if (state == null)
@@ -244,7 +244,7 @@ namespace Lab7
                 {
                     if (item.Lhs == prod && item.Rhs.SequenceEqual(prodValue[0]))
                     {
-                        return prodValue[1];
+                        return prodValue[0];
                     }
                 }
             }
@@ -300,7 +300,8 @@ namespace Lab7
                         !((Dictionary<string, int>)parsingTable[(int)workStack.Peek()].Item2).ContainsKey(possibleSymbol))
                     {
                         var prodId = GetProductionNumberShiftReduceConflict((int)workStack.Peek());
-                        var prod = grammar.GetProductionById(prodId);
+                        var prodIdInt = int.Parse(prodId);
+                        var prod = grammar.GetProductionById(prodIdInt);
                         outputBand.Add(prodId);
                         var index = 0;
                         while (index < prod.Item1.Length)

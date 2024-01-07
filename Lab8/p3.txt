@@ -1,0 +1,9 @@
+DATA: n, sum, i.
+n = READ.
+sum = 0.
+i = 1.
+while(i LE n):
+     sum = sum + READ.
+     i = i + 1.
+ENDWHILE.
+WRITE: sum.
